@@ -1,0 +1,7 @@
+com\cardwallet\controller\AuthController.class
+com\cardwallet\controller\AdminController.class
+com\cardwallet\db\Database.class
+com\cardwallet\CardWalletApplication.class
+com\cardwallet\config\WebConfig.class
+com\cardwallet\config\AuthInterceptor.class
+com\cardwallet\controller\DashboardController.class

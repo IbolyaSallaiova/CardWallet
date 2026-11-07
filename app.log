@@ -1,0 +1,52 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ---------------------< com.cardwallet:cardwallet >----------------------
+[INFO] Building CardWallet 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:3.3.5:run (default-cli) > test-compile @ cardwallet >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ cardwallet ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 5 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ cardwallet ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ cardwallet ---
+[INFO] skip non existing resourceDirectory C:\project\CardWallet\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ cardwallet ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< spring-boot:3.3.5:run (default-cli) < test-compile @ cardwallet <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:3.3.5:run (default-cli) @ cardwallet ---
+[INFO] Attaching agents: []
+2026-11-06T11:01:56.525+01:00  INFO 12208 --- [           main] com.cardwallet.CardWalletApplication     : Starting CardWalletApplication using Java 21.0.9 with PID 12208 (C:\project\CardWallet\target\classes started by ibs in C:\project\CardWallet)
+2026-11-06T11:01:56.529+01:00  INFO 12208 --- [           main] com.cardwallet.CardWalletApplication     : No active profile set, falling back to 1 default profile: "default"
+2026-11-06T11:01:57.374+01:00  INFO 12208 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 5000 (http)
+2026-11-06T11:01:57.384+01:00  INFO 12208 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-11-06T11:01:57.384+01:00  INFO 12208 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-11-06T11:01:57.418+01:00  INFO 12208 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-11-06T11:01:57.418+01:00  INFO 12208 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 864 ms
+2026-11-06T11:01:57.745+01:00  INFO 12208 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 5000 (http) with context path '/'
+2026-11-06T11:01:57.750+01:00  INFO 12208 --- [           main] com.cardwallet.CardWalletApplication     : Started CardWalletApplication in 1.492 seconds (process running for 1.697)
+2026-11-06T11:02:38.762+01:00  INFO 12208 --- [0.1-5000-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-11-06T11:02:38.762+01:00  INFO 12208 --- [0.1-5000-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-11-06T11:02:38.762+01:00  INFO 12208 --- [0.1-5000-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  04:10 min
+[INFO] Finished at: 2026-11-06T11:05:59+01:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:3.3.5:run (default-cli) on project cardwallet: Process terminated with exit code: -1 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

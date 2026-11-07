@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CardWallet &mdash; Sign In</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="auth-body">
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <div class="brand">
+                <img th:src="@{/img/logo.png}" alt="CardWallet logo" class="brand-logo">
+            </div>
+
+            <h1 class="auth-title">Welcome back</h1>
+            <p class="auth-subtitle">Sign in to access your CardWallet dashboard</p>
+
+            <div class="mode-indicator" th:classappend="'mode-' + ${mode}">
+                <span th:if="${mode == 'vulnerable'}">Vulnerable Mode</span>
+                <span th:unless="${mode == 'vulnerable'}">Secure Mode</span>
+            </div>
+
+            <div class="flash-area" th:if="${error} or ${notice}">
+                <div class="flash-message" th:if="${error}" th:text="${error}"></div>
+                <div class="flash-message" th:if="${notice}" th:text="${notice}"></div>
+            </div>
+
+            <form class="auth-form" method="POST"
+                  th:action="${mode == 'vulnerable'} ? @{/login/vulnerable} : @{/login/secure}">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" autocomplete="username" required>
+
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" autocomplete="current-password" required>
+
+                <button type="submit" class="btn-primary">Sign In</button>
+            </form>
+
+            <div class="mode-switch">
+                <span class="mode-switch-label">Security Mode</span>
+                <div class="mode-switch-buttons">
+                    <form method="POST" th:action="@{/mode/vulnerable}">
+                        <button type="submit" class="pill" th:classappend="${mode == 'vulnerable'} ? 'pill-active' : ''">
+                            Vulnerable
+                        </button>
+                    </form>
+                    <form method="POST" th:action="@{/mode/secure}">
+                        <button type="submit" class="pill" th:classappend="${mode == 'secure'} ? 'pill-active' : ''">
+                            Secure
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

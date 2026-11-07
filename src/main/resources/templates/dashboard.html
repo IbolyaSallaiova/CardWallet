@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CardWallet &mdash; Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css(v=4)}">
+</head>
+<body class="dashboard-body">
+    <header class="topbar">
+        <div class="topbar-brand">
+            <img th:src="@{/img/logo.png}" alt="CardWallet logo" class="topbar-logo">
+        </div>
+        <div class="topbar-right">
+            <span class="mode-chip" th:classappend="'mode-' + ${mode}">
+                <span th:text="${mode == 'vulnerable'} ? 'Vulnerable Mode' : 'Secure Mode'"></span>
+            </span>
+            <span class="welcome-text">Welcome, <strong th:text="${username}"></strong> (<span th:text="${role}"></span>)</span>
+            <a th:href="@{/logout}" class="btn-secondary">Logout</a>
+        </div>
+    </header>
+
+    <main class="dashboard-main">
+        <section class="admin-panel" th:if="${role == 'admin'}">
+            <h2>Manage Users</h2>
+            <p class="search-hint">Admins don't have cards and can't see anyone else's &mdash; only accounts.</p>
+
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="u : ${users}">
+                        <td th:text="${u.id}"></td>
+                        <td th:text="${u.username}"></td>
+                        <td th:text="${u.role}"></td>
+                        <td>
+                            <form th:if="${u.username != username}" method="post"
+                                  th:action="@{'/admin/users/' + ${u.id} + '/delete'}">
+                                <button type="submit" class="btn-secondary">Delete</button>
+                            </form>
+                            <span th:if="${u.username == username}">&mdash;</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Add User</h3>
+            <form class="add-user-form" method="post" th:action="@{/admin/users}">
+                <label>Username
+                    <input type="text" name="username" required>
+                </label>
+                <label>Password
+                    <input type="text" name="password" required>
+                </label>
+                <label>Role
+                    <select name="role">
+                        <option value="user">user</option>
+                        <option value="admin">admin</option>
+                    </select>
+                </label>
+                <button type="submit" class="btn-primary">Add User</button>
+            </form>
+        </section>
+
+        <section class="cards-section" th:unless="${role == 'admin'}">
+            <h2>My Cards</h2>
+            <p class="search-hint">Click a card to see its balance, status, and recent payments.</p>
+
+            <div class="cards-grid">
+                <div class="card-tile" th:each="card : ${cards}" th:attr="data-card-id=${card.id}">
+                    <div class="card-chip"></div>
+                    <div class="card-number" th:text="${card.maskedNumber}"></div>
+                    <div class="card-meta">
+                        <div>
+                            <span class="card-label">Card</span>
+                            <span class="card-value" th:text="${card.nickname}"></span>
+                        </div>
+                        <div>
+                            <span class="card-label">Balance</span>
+                            <span class="card-value" th:text="${card.balanceFormatted}"></span>
+                        </div>
+                    </div>
+                    <span class="card-status-badge" th:text="${card.status}"></span>
+                    <div class="card-brand">CardWallet</div>
+                </div>
+
+                <div class="add-card-tile" id="add-card-tile" role="button" tabindex="0">
+                    <span class="add-card-icon">+</span>
+                    <span class="add-card-label">Add Card</span>
+                </div>
+            </div>
+
+            <div class="card-detail" id="card-detail" hidden>
+                <div class="card-detail-header">
+                    <h3 id="detail-nickname"></h3>
+                    <div class="card-detail-actions">
+                        <button type="button" id="detail-delete" class="btn-danger">Delete</button>
+                        <button type="button" id="detail-close" class="btn-secondary">Close</button>
+                    </div>
+                </div>
+                <div class="card-detail-grid">
+                    <div>
+                        <span class="card-label">Card Number</span>
+                        <span class="card-value" id="detail-number"></span>
+                    </div>
+                    <div>
+                        <span class="card-label">Status</span>
+                        <span class="card-value" id="detail-status"></span>
+                    </div>
+                    <div>
+                        <span class="card-label">Expires</span>
+                        <span class="card-value" id="detail-expiry"></span>
+                    </div>
+                    <div>
+                        <span class="card-label">Balance</span>
+                        <span class="card-value" id="detail-balance"></span>
+                    </div>
+                </div>
+
+                <h4>Recent Payments</h4>
+                <table class="payments-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Merchant</th>
+                            <th>Category</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody id="detail-payments"></tbody>
+                </table>
+            </div>
+
+            <div class="modal-overlay" id="add-card-overlay" hidden>
+                <div class="modal" role="dialog" aria-labelledby="add-card-title" aria-modal="true">
+                    <div class="modal-header">
+                        <h3 id="add-card-title">Add a Card</h3>
+                        <button type="button" id="add-card-close" class="modal-close" aria-label="Close">&times;</button>
+                    </div>
+                    <form class="modal-form" method="post" th:action="@{/cards}">
+                        <label>Nickname
+                            <input type="text" name="nickname" placeholder="e.g. Savings" required>
+                        </label>
+                        <label>Card Number
+                            <input type="text" name="cardNumber" placeholder="e.g. 5391 2240 7781 4821" required>
+                        </label>
+                        <label>Expiry
+                            <input type="text" name="expiry" placeholder="MM/YY" pattern="\d{2}/\d{2}" required>
+                        </label>
+                        <label>Initial Balance
+                            <input type="number" name="balance" step="0.01" min="0" placeholder="0.00" value="0">
+                        </label>
+                        <div class="modal-actions">
+                            <button type="button" id="add-card-cancel" class="btn-secondary">Cancel</button>
+                            <button type="submit" class="btn-primary">Add Card</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="modal-overlay" id="delete-confirm-overlay" hidden>
+                <div class="modal" role="dialog" aria-labelledby="delete-confirm-title" aria-modal="true">
+                    <div class="modal-header">
+                        <h3 id="delete-confirm-title">Delete Card</h3>
+                        <button type="button" id="delete-confirm-close" class="modal-close" aria-label="Close">&times;</button>
+                    </div>
+                    <p class="modal-text">
+                        Are you sure you want to delete <strong id="delete-confirm-name"></strong>?
+                        This cannot be undone.
+                    </p>
+                    <form id="delete-confirm-form" method="post" action="#">
+                        <div class="modal-actions">
+                            <button type="button" id="delete-confirm-cancel" class="btn-secondary">Cancel</button>
+                            <button type="submit" class="btn-danger">Delete Card</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section class="search-panel" th:unless="${role == 'admin'}">
+            <h2>Card Search</h2>
+            <p class="search-hint">Search your own cards by card number.</p>
+            <div class="search-row">
+                <input type="text" id="search-input" placeholder="e.g. 4821">
+                <button id="search-btn" class="btn-primary">Search</button>
+            </div>
+
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>Card</th>
+                        <th>Card Number</th>
+                        <th>Status</th>
+                        <th>Balance</th>
+                    </tr>
+                </thead>
+                <tbody id="results-body">
+                </tbody>
+            </table>
+            <p id="no-results" class="no-results" style="display:none;">No matching cards found.</p>
+        </section>
+    </main>
+
+    <script type="application/json" id="cards-data" th:utext="${cardsJson}"></script>
+    <script th:src="@{/js/script.js(v=4)}"></script>
+</body>
+</html>

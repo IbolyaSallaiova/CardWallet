@@ -1,0 +1,5 @@
+com\cardwallet\AbstractTest.class
+com\cardwallet\AdminUsersTests.class
+com\cardwallet\LoginTests.class
+com\cardwallet\UserCardsTests.class
+com\cardwallet\SqlInjectionTests.class
