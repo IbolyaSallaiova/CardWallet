@@ -6,6 +6,7 @@ SQL Injection vulnerabilities:
 
 1. **Authentication bypass** 
 2. **Broken access control via SQL Injection**
+3. **Error-based SQL Injection** (database schema disclosure via verbose error messages)
 
 ## Tech stack
 
@@ -145,6 +146,42 @@ below.
    collapses into "true for every row," so the ownership check is
    completely bypassed.
 
+## Error-based SQL Injection (Vulnerable Mode)
+1. Log in as `ibi` / `ibi123` (Vulnerable Mode).
+2. In the card search, search:
+
+   ```
+   ' AND (SELECT 1 FROM nonexistent_table) --
+   ```
+
+3. Instead of an empty result, the search panel shows a red error banner
+   with the raw SQLite exception message:
+
+   ```
+   [SQLITE_ERROR] SQL error or missing database (no such table: nonexistent_table)
+   ```
+
+4. Explain: in `DashboardController.search`, the vulnerable branch now
+   returns the caught exception's message to the client instead of
+   swallowing it:
+
+   ```java
+   try (Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(sql)) {
+       collectRows(rs, results);
+   } catch (SQLException e) {
+       return Map.of("results", results, "mode", mode, "error", e.getMessage());
+   }
+   ```
+
+   SQLite (like most databases) includes identifiers from the failing
+   query in its error text. By injecting different table/column names
+   into the same `card_number LIKE '%...%'` entry point used for the
+   ownership bypass above, an attacker can map the schema one guess at a
+   time — `no such table: X` vs. no error at all confirms whether `X`
+   exists — without ever needing the data to come back in a normal
+   result row. This is the same injection point as Part 3; it's a second,
+   independent way to exploit it.
 
 | | Vulnerable | Secure |
 |---|---|---|
@@ -171,10 +208,12 @@ they only prevent SQL Injection.
 ## Security modes
 
 - **Vulnerable Mode** — login and card search both use raw string
-  concatenation with `Statement`. Authentication bypass and the
-  ownership-bypass card leak both work.
+  concatenation with `Statement`, and search exceptions are returned to the
+  client. Authentication bypass, the ownership-bypass card leak, and the
+  error-based schema disclosure all work.
 - **Secure Mode** — login and card search both use `PreparedStatement` with
-  bound parameters. Both attacks are rejected.
+  bound parameters, and no exception detail is ever returned to the client.
+  All three attacks are rejected.
 
   
 

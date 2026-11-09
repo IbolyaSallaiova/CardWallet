@@ -482,6 +482,18 @@ body {
     margin-top: 10px;
 }
 
+.search-error {
+    background: #fdecea;
+    border: 1px solid #e8a39a;
+    color: #9c2f2f;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-family: Consolas, "Courier New", monospace;
+    margin-top: 10px;
+    word-break: break-word;
+}
+
 .admin-panel {
     background: var(--panel);
     border: 1px solid var(--border);

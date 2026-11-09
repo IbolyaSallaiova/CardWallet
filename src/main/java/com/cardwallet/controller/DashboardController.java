@@ -218,6 +218,7 @@ public class DashboardController {
                      ResultSet rs = stmt.executeQuery(sql)) {
                     collectRows(rs, results);
                 } catch (SQLException e) {
+                    return Map.of("results", results, "mode", mode, "error", e.getMessage());
                 }
             } else {
                 String sql = "SELECT nickname, card_number, status, balance_cents FROM user_cards " +

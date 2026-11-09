@@ -150,6 +150,7 @@ function setupSearch() {
     const button = document.getElementById("search-btn");
     const resultsBody = document.getElementById("results-body");
     const noResults = document.getElementById("no-results");
+    const searchError = document.getElementById("search-error");
 
     if (!button) return;
 
@@ -168,11 +169,19 @@ function setupSearch() {
         }
 
         const data = await response.json();
-        renderResults(data.results || []);
+        renderResults(data.results || [], data.error);
     }
 
-    function renderResults(rows) {
+    function renderResults(rows, error) {
         resultsBody.innerHTML = "";
+
+        if (error) {
+            noResults.style.display = "none";
+            searchError.textContent = error;
+            searchError.style.display = "block";
+            return;
+        }
+        searchError.style.display = "none";
 
         if (rows.length === 0) {
             noResults.style.display = "block";
